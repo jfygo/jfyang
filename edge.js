@@ -15,28 +15,28 @@ class Edge{
             this.drawDash();
         }  
     }
-
+    
     drawSolid() {
         // 切换回实线
-        graph.ctx.setLineDash([]);
-        graph.ctx.beginPath();
-        graph.ctx.moveTo(this.startX, this.startY);
-        graph.ctx.lineTo(this.endX, this.endY);
-        graph.ctx.lineWidth = this.lineWidth;
-        graph.ctx.strokeStyle = this.lineColor;
-        graph.ctx.closePath();
-        graph.ctx.stroke();  
+        graph.canvas.ctx.setLineDash([]);
+        graph.canvas.ctx.beginPath();
+        graph.canvas.ctx.moveTo(this.startX, this.startY);
+        graph.canvas.ctx.lineTo(this.endX, this.endY);
+        graph.canvas.ctx.lineWidth = this.lineWidth;
+        graph.canvas.ctx.strokeStyle = this.lineColor;
+        graph.canvas.ctx.closePath();
+        graph.canvas.ctx.stroke();  
     }
 
     drawDash() {
-        graph.ctx.beginPath();
-        graph.ctx.setLineDash([4,8]);
-        graph.ctx.moveTo(this.startX, this.startY);
-        graph.ctx.lineTo(this.endX, this.endY);
-        graph.ctx.lineWidth = this.lineWidth;
-        graph.ctx.strokeStyle = this.lineColor;
-        graph.ctx.closePath();
-        graph.ctx.stroke(); 
+        graph.canvas.ctx.beginPath();
+        graph.canvas.ctx.setLineDash([4,8]);
+        graph.canvas.ctx.moveTo(this.startX, this.startY);
+        graph.canvas.ctx.lineTo(this.endX, this.endY);
+        graph.canvas.ctx.lineWidth = this.lineWidth;
+        graph.canvas.ctx.strokeStyle = this.lineColor;
+        graph.canvas.ctx.closePath();
+        graph.canvas.ctx.stroke(); 
     }
 
     calculateCoordinate() {
@@ -57,12 +57,12 @@ class Edge{
     }
 
     markSelectEdge() {
-        graph.ctx.beginPath();
-        graph.ctx.moveTo(this.startX, this.startY);
-        graph.ctx.lineTo(this.endX, this.endY);
-        graph.ctx.lineWidth = this.lineWidth * 1.5;
-        graph.ctx.strokeStyle = setting['markLineColor'];
-        graph.ctx.closePath();
-        graph.ctx.stroke();   
+        graph.canvas.ctx.beginPath();
+        graph.canvas.ctx.moveTo(this.startX, this.startY);
+        graph.canvas.ctx.lineTo(this.endX, this.endY);
+        graph.canvas.ctx.lineWidth = this.lineWidth * 1.5;
+        graph.canvas.ctx.strokeStyle = setting['markLineColor'];
+        graph.canvas.ctx.closePath();
+        graph.canvas.ctx.stroke();   
     }
 }

@@ -10,12 +10,14 @@ setting = {
     lineColor: '#000000',
     edgeClickDistance: 5,
     markLineColor: '#00ff00',
-    edgeStyle: 'dash',
+    edgeStyle: 'solid',
     // 网格的属性
     girdLineWidth: 0.1,
     girdColor: '#000000',
     girdInterval: 10,
     // 最外面的数字
     outFont: '10px "微软雅黑"',
-
+    // canvas设置
+    canvasEnlarge: 1.1,
+    canvasNarrow: 0.9,
 }

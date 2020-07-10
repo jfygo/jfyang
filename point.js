@@ -43,7 +43,7 @@ class Point{
 
     draw() {
         // 切换回实线
-        graph.ctx.setLineDash([]);
+        graph.canvas.ctx.setLineDash([]);
         if (this.style === 'hollow') {
             this.drawHollow();
         } else if (this.style === 'solid') {
@@ -52,35 +52,35 @@ class Point{
     }
 
     drawHollow() {
-        graph.ctx.lineWidth = setting['pointlineWidth'];
-        graph.ctx.strokeStyle = this.color;
-        graph.ctx.beginPath();
-        graph.ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
-        graph.ctx.closePath();
-        graph.ctx.stroke();
+        graph.canvas.ctx.lineWidth = setting['pointlineWidth'];
+        graph.canvas.ctx.strokeStyle = this.color;
+        graph.canvas.ctx.beginPath();
+        graph.canvas.ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
+        graph.canvas.ctx.closePath();
+        graph.canvas.ctx.stroke();
     }
 
     drawSolid() {
-        graph.ctx.fillStyle = this.color;
-		graph.ctx.beginPath();
-		graph.ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
-		graph.ctx.closePath();
-		graph.ctx.fill();
+        graph.canvas.ctx.fillStyle = this.color;
+		graph.canvas.ctx.beginPath();
+		graph.canvas.ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
+		graph.canvas.ctx.closePath();
+		graph.canvas.ctx.fill();
     }
 
     markSelectPoint() {
-        graph.ctx.fillStyle = setting.markPointColor;
-        graph.ctx.beginPath();
-        graph.ctx.arc(this.x, this.y, this.radius / 2, 0, 2*Math.PI);
-        graph.ctx.closePath();
-        graph.ctx.fill();
+        graph.canvas.ctx.fillStyle = setting.markPointColor;
+        graph.canvas.ctx.beginPath();
+        graph.canvas.ctx.arc(this.x, this.y, this.radius / 2, 0, 2*Math.PI);
+        graph.canvas.ctx.closePath();
+        graph.canvas.ctx.fill();
     }
 
     cleanPointMark() {
-        graph.ctx.clearRect(this.x - this.radius / 2, this.y - this.radius / 2, this.radius, this.radius);
+        graph.canvas.ctx.clearRect(this.x - this.radius / 2, this.y - this.radius / 2, this.radius, this.radius);
     }
 
     remove() {
-        graph.ctx.clearRect(this.x - this.radius, this.y - this.radius - 0.1, this.radius * 2 - 0.2, this.radius * 2);
+        graph.canvas.ctx.clearRect(this.x - this.radius, this.y - this.radius - 0.1, this.radius * 2 - 0.2, this.radius * 2);
     }
 }

@@ -1,31 +1,21 @@
 class Graph{
     constructor() {
-        this.mouse = new Mouse();
         this.points = [];
         this.edges = [];
         this.selectPoints = [];
         this.selectEdges = [];
-        this.$canvas = document.getElementById('my-canvas');
-        this.ctx=this.$canvas.getContext("2d");
+        this.canvas = new Canvas();
+        this.mouse = new Mouse();
         this.rightMeau = new RightMeau();
         this.topMeau = new TopMeau();
         this.isSelectPoint = false;
     }
 
     init() {
+        this.canvas.init();
         this.mouse.init();
         this.rightMeau.init();
         this.topMeau.init();
-        this.setWidthAndHeight();
-    }
-
-    setWidthAndHeight() {
-        if (this.$canvas.width  < window.innerWidth){
-            this.$canvas.width  = window.innerWidth;
-        }
-        if (this.$canvas.height < window.innerHeight){
-            this.$canvas.height = window.innerHeight;
-        }
     }
 
     getPointId() {
@@ -60,7 +50,7 @@ class Graph{
             ) {
                 // 如果没按ctrl，点击了别的点，清空选择的列表
                 if (this.selectPoints.length > 0 && !ctrl) {
-                    this.updateCanvas(); 
+                    this.canvas.updateCanvas(); 
                     this.selectPoints = [];
                 }
                 this.isSelectPoint = true;
@@ -71,7 +61,7 @@ class Graph{
         }
         // 如果点击了空白处，就清空选择的列表
         if (i === len && this.selectPoints.length > 0) {
-            this.updateCanvas();
+            this.canvas.updateCanvas();
             this.selectPoints = [];
             this.isSelectPoint = false;
         } 
@@ -85,7 +75,7 @@ class Graph{
             if (edge.getPointFromEdgeDistance(x, y) < setting['edgeClickDistance']) {
                 // 如果没按ctrl，点击了别的点，清空选择的列表
                 if (this.selectEdges.length > 0 && !ctrl) {
-                    this.updateCanvas();
+                    this.canvas.updateCanvas();
                 }
                 edge.markSelectEdge();
                 this.selectEdges.push(edge);
@@ -94,25 +84,9 @@ class Graph{
         } 
         // 如果点击了空白处，就清空选择的列表
         if (i === len && this.selectEdges.length > 0) {
-            this.updateCanvas();
+            this.canvas.updateCanvas();
             this.selectEdges = [];
         }  
-    }
-
-    updateCanvas() {
-        // 切换回实线
-        this.ctx.setLineDash([]);
-        this.ctx.clearRect(0, 0, this.$canvas.width, this.$canvas.height);
-        this.points.forEach(v => {
-            v.draw();
-        });
-        this.edges.forEach(v => {
-            v.draw();
-        });
-        if (this.topMeau.isShowGird) {
-            this.topMeau.showGird();
-        }
-        this.topMeau.showFigureCoordinate();
     }
 
     updatePoint(color, size, style) {
@@ -121,7 +95,7 @@ class Graph{
             point.radius = size;
             point.style = style;
         });
-        this.updateCanvas();
+        this.canvas.updateCanvas();
     }
 
     removePoint() {
@@ -135,7 +109,7 @@ class Graph{
         this.edges = this.edges.filter(edge => {
             return !(selectPointIds.includes(edge.startPoint.id) || selectPointIds.includes(edge.endPoint.id));
         })
-        this.updateCanvas();
+        this.canvas.updateCanvas();
     }
 
     connectPoint() {
@@ -156,7 +130,7 @@ class Graph{
         this.edges = this.edges.filter(edge => {
             return edge.lineWidth > 0;
         })
-        this.updateCanvas();
+        this.canvas.updateCanvas();
     }
 
     updateEdge(color, size, style) {
@@ -165,7 +139,7 @@ class Graph{
             edge.lineWidth = size;
             edge.style = style;
         });
-        this.updateCanvas();
+        this.canvas.updateCanvas();
     }
 }
 
