@@ -1,0 +1,133 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+html,body{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+ul{
+    list-style: none;
+}
+
+.top{
+    width: 100%;
+    height: 30px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12), 0 3px 1px -2px rgba(0,0,0,.2);
+}
+
+.top .meau{
+    list-style: none;
+    display: flex;
+    justify-content: center;
+}
+
+.top .meau .active{
+    background-color: #0000ff;
+    color: #ffffff;
+}
+
+.meau-item{
+    width: 100px;
+    height: 30px;
+    line-height: 30px;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+}
+
+.middle{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.graph-wrap{
+    /* text-align: center; */
+    position: relative;
+}
+
+
+
+/* 对话框 */
+.dialog{
+    display: none;
+    box-shadow: 0 0 2px 1px rgba(102,102,102,0.3);
+}
+
+.point-dialog,.edge-dialog{
+    position: absolute;
+    width: 150px;
+    background-color: #fff;
+    z-index: 500;
+}
+
+.point-dialog .point-operation,.edge-dialog .edge-operation{
+    width: 100%;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    border-bottom: 1px solid rgba(102,102,102,0.3);
+}
+
+.point-dialog .point-operation:hover{
+    background-color: #eee;
+}
+
+.edge-dialog .edge-operation:hover{
+    background-color: #eee;
+}
+
+.point-dialog .input,.edge-dialog .input{
+    width: 60px;
+    margin-left: 20px;
+    height: 20px;
+}
+
+.point-dialog .style-operation .point-style,.edge-dialog .style-operation .edge-style{
+    display: inline-block;
+    box-sizing: border-box;
+    width: 60px;
+    height: 25px;
+    margin-top: 2.5px;
+    line-height: 25px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.point-dialog .style-operation .active,.edge-dialog .style-operation .active{
+    background-color: #f40;
+    color: #ffffff;
+}
+
+.point-dialog .delete-operation,.point-dialog .connect-operation,.edge-dialog .delete-operation{
+    cursor: pointer;
+}
+
+.point-dialog .point-operation-complate,.edge-dialog .edge-operation-complate{
+    height: 40px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.point-dialog .point-operation-complate .button,.edge-dialog .edge-operation-complate .button{
+    width: 50px;
+    height: 25px;
+    background-color: #6557D2;
+    color: #ffffff;
+    border-radius: 15px;
+    line-height: 25px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.point-dialog .point-operation-complate .comfirm, .edge-dialog .comfirm{
+    background-color: #6557D2;
+    color: #ffffff;
+}

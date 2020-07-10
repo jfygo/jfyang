@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画图软件</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="top">
+        <ul class="meau">
+            <li class="save meau-item">保存</li>
+            <li class="insert-point meau-item">插入点 </li>
+            <li class="cancel-insert-point meau-item active">取消插入点</li>
+            <li class="show-gird meau-item active">显示网格</li>
+        </ul>
+    </div>
+    <div class="middle">
+        <div class="graph-wrap">
+            <canvas id="my-canvas"class="graph"></canvas>
+        </div>
+    </div>
+    <!-- 右击的菜单 start-->
+    <!-- 改变点的属性菜单 -->
+    <div class="dialog point-dialog">
+        <ul class="point-operation-wrap">
+            <li class="point-operation color-operation">
+                颜色<input type="text" class="input color-input">
+            </li>
+            <li class="point-operation size-operation">
+                大小<input type="text" class="input size-input">
+            </li>
+            <li class="point-operation style-operation">
+                <p class="solid point-style">实心</p>
+                <p class="hollow point-style">虚心</p>
+            </li>
+            <li class="point-operation delete-operation close-dialog">删除</li>
+            <li class="point-operation connect-operation close-dialog">连接</li>
+        </ul>
+        <div class="point-operation-complate">
+            <p class="comfirm button close-dialog">确认</p>
+            <p class="cancel button close-dialog">取消</p>
+        </div>
+    </div>
+    <!-- 改变边的属性的菜单 -->
+    <div class="dialog edge-dialog">
+        <ul class="edge-operation-wrap">
+            <li class="edge-operation color-operation">
+                颜色<input type="text" class="input color-input">
+            </li>
+            <li class="edge-operation size-operation">
+                宽度<input type="text" class="input size-input">
+            </li>
+            <li class="edge-operation style-operation">
+                <p class="solid edge-style">实线</p>
+                <p class="dash edge-style">虚线</p>
+            </li>
+            <li class="edge-operation delete-operation close-dialog">删除</li>
+        </ul>
+        <div class="edge-operation-complate">
+            <p class="comfirm button close-dialog">确认</p>
+            <p class="cancel button close-dialog">取消</p>
+        </div>
+    </div>
+    <script src="./jquery.js"></script>
+    <script src="./setting.js"></script>
+    <script src="./mouse.js"></script>
+    <script src="./edge.js"></script>
+    <script src="./point.js"></script>
+    <script src="./rightMeau.js"></script>
+    <script src="./topMeau.js"></script>
+    <script src="./index.js"></script>
+</body>
+</html>
