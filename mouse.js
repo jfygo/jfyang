@@ -1,15 +1,16 @@
 class Mouse{
     constructor() {
-        this.mode = 'cancelInsert';
+        this.mode = 'cancelInsertPoint';
         this.$canvas = $('#my-canvas');
         this.$canvasWrap = $('.graph-wrap');
         this.canDragCanvas = false;
         this.longPress = undefined;
+        this.originX = 0;
+        this.originY = 0;
     }
 
     init() {
         this.$canvas.click(e => this.canvasClick(e));
-        this.bindScrollEvent();
         this.$canvas.mousedown(e => this.mouseDown(e));
         this.$canvas.mouseup(e => this.mouseUp(e));
     }
@@ -18,20 +19,33 @@ class Mouse{
         this.mode = newMode;
     }
 
-    mouseMove(e, x, y) {
-        graph.canvas.move(e.originalEvent.clientX - x, e.originalEvent.clientY - y);
+    mouseMove(e) {
+        if (this.originX === 0 && this.originY === 0) {
+            this.originX = e.originalEvent.clientX;
+            this.originY = e.originalEvent.clientY;
+        } else {
+            graph.selectPoints.forEach(point => {
+                point.move(e.originalEvent.clientX - this.originX, e.originalEvent.clientY - this.originY);
+            });
+            graph.canvas.updateCanvas();
+            graph.selectPoints.forEach(point => {
+                point.markSelectPoint();
+            });
+            this.originX = e.originalEvent.clientX;
+            this.originY = e.originalEvent.clientY;
+        }
     }
 
     mouseDown(e) {
         if (e.which === 1) {
-            const x = e.originalEvent.clientX;
-            const y = e.originalEvent.clientY;
-            this.longPress = setTimeout(() => {
-                this.$canvas.css({
-                    cursor: 'move',
-                });
-                this.$canvas.mousemove(e => this.mouseMove(e, x, y));
-            }, 800)
+            if (graph.selectPoints.length > 0 && this.mode === 'cancelInsertPoint') {
+                this.longPress = setTimeout(() => {
+                    this.$canvas.css({
+                        cursor: 'move',
+                    });
+                this.$canvas.mousemove(e => this.mouseMove(e));
+                }, setting['longPress']);
+            }
         }
     }
 
@@ -42,19 +56,9 @@ class Mouse{
                 cursor: 'auto',
             });
             this.$canvas.off('mousemove');
-            const position = this.$canvasWrap.offset();
-            graph.canvas.left = position.left;
-            graph.canvas.top = position.top - $('.top').height();
         }
-
-        if (this.mode === 'insertPoint') {
-            this.$canvas.css({
-                cursor: 'Crosshair',
-            });
-        }
-
-        graph.canvas.moveX = 0;
-        graph.canvas.moveY = 0;
+        this.originX = 0;
+        this.originY = 0;
     }
 
     changeInsertMode($cancelInsertPointButton, $insertButton) {
@@ -100,21 +104,5 @@ class Mouse{
         } else {
             window.onmousewheel = document.onmousewheel = this.scorllEventHandle;
         }
-    }
-
-    scorllEventHandle(event) {
-        let delta = 0;
-        if (!event) {
-            event = window.event;
-        }
-        if (event.wheelDelta) {//IE、chrome浏览器使用的是wheelDelta，并且值为“正负120”
-            delta = event.wheelDelta / 120; 
-            if (window.opera){
-                delta = -delta;//因为IE、chrome等向下滚动是负值，FF是正值，为了处理一致性，在此取反处理
-            } 
-        } else if (event.detail) {//FF浏览器使用的是detail,其值为“正负3”
-            delta = -event.detail / 3;
-        }
-        graph.canvas.scale(delta);
     }
 }

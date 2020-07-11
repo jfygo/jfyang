@@ -4,6 +4,7 @@ class TopMeau{
         this.$cancelInsertPointButton = $('.top .cancel-insert-point');
         this.$showGirdButton = $('.top .show-gird');
         this.$saveButton = $('.top .save');
+        this.$lockButton = $('.top .fix-graph');
         this.isShowGird = false;
     }
 
@@ -110,5 +111,4 @@ class TopMeau{
             i += 5 * setting['girdInterval'];
         }
     }
-
 }

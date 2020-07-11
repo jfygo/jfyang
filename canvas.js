@@ -6,8 +6,6 @@ class Canvas{
         this.left = 0;
         this.top = 0;
         this.topHeight = +$('.top').height();
-        this.moveX = 0;
-        this.moveY = 0;
     }
 
     init() {
@@ -20,22 +18,6 @@ class Canvas{
         }
         if (this.$canvas.height < window.innerHeight){
             this.$canvas.height = window.innerHeight;
-        }
-    }
-
-    move(x, y) {
-        if (this.moveX === 0 && this.moveY === 0) {
-            this.moveX = x;
-            this.moveY = y;
-        } else {
-            this.left += (x - this.moveX);
-            this.top += (y - this.moveY);
-            this.moveX = x;
-            this.moveY = y;
-            this.$canvasWrap.css({
-                left: this.left,
-                top: this.top,
-            })
         }
     }
 
@@ -53,26 +35,5 @@ class Canvas{
             graph.topMeau.showGird();
         }
         graph.topMeau.showFigureCoordinate();
-    }
-
-    scale(scroll) {
-        const width = this.$canvas.width;
-        const height = this.$canvas.height;
-        if (scroll > 0) {
-            this.ctx.scale(setting['canvasEnlarge'], setting['canvasEnlarge']);
-            this.$canvas.width *= setting['canvasEnlarge'];
-            this.$canvas.height *= setting['canvasEnlarge'];
-        } else {
-            this.ctx.scale(setting['canvasNarrow'], setting['canvasNarrow']);
-            this.$canvas.width *= setting['canvasNarrow'];
-            this.$canvas.height *= setting['canvasNarrow'];
-        }
-        this.left -= (this.$canvas.width - width) / 2;
-        this.top -= (this.$canvas.height - height) / 2;
-        this.$canvasWrap.css({
-            left: this.left,
-            top: this.top,
-        })
-        this.updateCanvas();
     }
 }

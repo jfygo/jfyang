@@ -31,6 +31,10 @@ ul{
     color: #ffffff;
 }
 
+.meau-item:hover{
+    background-color: #eee;
+}
+
 .meau-item{
     width: 100px;
     height: 30px;
@@ -38,6 +42,16 @@ ul{
     box-sizing: border-box;
     text-align: center;
     cursor: pointer;
+}
+
+.top .meau .fix-graph .iron{
+    height: 20px;
+    position: relative;
+    top: 5px;
+}
+
+.top .meau .fix-graph .unlock-iron{
+    display: none;
 }
 
 .middle{

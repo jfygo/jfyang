@@ -20,4 +20,5 @@ setting = {
     // canvas设置
     canvasEnlarge: 1.1,
     canvasNarrow: 0.9,
+    longPress: 500,
 }

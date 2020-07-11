@@ -51,6 +51,22 @@ class Point{
         }
     }
 
+    move(x, y) {
+        this.x += x;
+        this.y += y;
+        graph.edges.forEach(edge => {
+            if (edge.startPoint.id === this.id) {
+                edge.startPoint.x = this.x;
+                edge.startPoint.y = this.y;
+                edge.calculateCoordinate();
+            } else if (edge.endPoint.id === this.id) {
+                edge.endPoint.x = this.x;
+                edge.endPoint.y = this.y;
+                edge.calculateCoordinate();
+            }
+        });
+    }
+
     drawHollow() {
         graph.canvas.ctx.lineWidth = setting['pointlineWidth'];
         graph.canvas.ctx.strokeStyle = this.color;
