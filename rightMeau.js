@@ -9,8 +9,6 @@ class RightMeau{
             var e = e || event;
            //阻止默认行为
             e.preventDefault();
-            console.log(graph.executer.orders)
-            console.log(graph.executer.index)
             if (graph.selectPoints.length > 0) {
                 this.pointAttributeMeau.pointAttributeMeauShow(e.clientX, e.clientY)
             } else if (graph.selectEdges.length > 0) {

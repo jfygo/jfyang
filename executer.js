@@ -192,6 +192,11 @@ class Executer{
                 point.style = info.new.style;
             }
         });
+        graph.edges.forEach(edge => {
+            if (ids.includes(edge.startPoint.id) || ids.includes(edge.endPoint.id)) {
+                edge.calculateCoordinate();
+            }
+        });
         if (isTrack) {
             this.orders = this.orders.slice(0, this.index);
             this.orders.push({
@@ -229,6 +234,10 @@ class Executer{
             point.move(x, y);
         });
         graph.canvas.updateCanvas();
+        graph.selectPoints = points;
+        points.forEach(point => {
+            point.markSelectPoint()
+        });
     }
 
     pointMoveOrder(points, distanceX, distanceY) {
