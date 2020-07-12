@@ -4,7 +4,8 @@ class TopMeau{
         this.$cancelInsertPointButton = $('.top .cancel-insert-point');
         this.$showGirdButton = $('.top .show-gird');
         this.$saveButton = $('.top .save');
-        this.$lockButton = $('.top .fix-graph');
+        this.$revokeButton = $('.top .revoke');
+        this.$recoveryButton = $('.top .recovery');
         this.isShowGird = false;
     }
 
@@ -28,6 +29,10 @@ class TopMeau{
         this.$saveButton.click(e => {
             this.save();
         })
+
+        this.$revokeButton.click(e => graph.executer.revoke())
+
+        this.$recoveryButton.click(e => graph.executer.recovery())
 
         setTimeout(() => {
             this.showGird();

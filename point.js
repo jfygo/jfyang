@@ -1,9 +1,7 @@
 class Point{
     constructor(id, x, y, radius=setting['pointSize'], style=setting['pointStyle'], color=setting['pointColor']) {
         this.id = id;
-        this.neighborPoint = [];
-        this.neighborFrom = [];
-        this.neighborTo = [];
+        this.connectEdge = [];
         this.x = x;
         this.y = y;
         this.radius = radius;
@@ -11,8 +9,8 @@ class Point{
         this.color = color;
     }
 
-    addNeighborPoint(point) {
-        this.neighborPoint.push(point)
+    addConnectEdge(id) {
+        this.connectEdge.push(id);
     }
 
     removeNeighborPoint(point) {
@@ -54,6 +52,12 @@ class Point{
     move(x, y) {
         this.x += x;
         this.y += y;
+        graph.points.forEach(point => {
+            if (point.id === this.id) {
+                point.x = this.x;
+                point.y = this.y;
+            }
+        })
         graph.edges.forEach(edge => {
             if (edge.startPoint.id === this.id) {
                 edge.startPoint.x = this.x;

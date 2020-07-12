@@ -7,6 +7,8 @@ class Mouse{
         this.longPress = undefined;
         this.originX = 0;
         this.originY = 0;
+        this.movePoints = [];
+        this.clickPosition = {};
     }
 
     init() {
@@ -24,13 +26,7 @@ class Mouse{
             this.originX = e.originalEvent.clientX;
             this.originY = e.originalEvent.clientY;
         } else {
-            graph.selectPoints.forEach(point => {
-                point.move(e.originalEvent.clientX - this.originX, e.originalEvent.clientY - this.originY);
-            });
-            graph.canvas.updateCanvas();
-            graph.selectPoints.forEach(point => {
-                point.markSelectPoint();
-            });
+            graph.executer.pointMove(graph.selectPoints, e.originalEvent.clientX - this.originX, e.originalEvent.clientY - this.originY);
             this.originX = e.originalEvent.clientX;
             this.originY = e.originalEvent.clientY;
         }
@@ -43,13 +39,19 @@ class Mouse{
                     this.$canvas.css({
                         cursor: 'move',
                     });
+                // 记录移动前的位置
+                this.movePoints = graph.selectPoints;
+                this.clickPosition = {
+                    x: e.originalEvent.layerX,
+                    y: e.originalEvent.layerY,
+                }
                 this.$canvas.mousemove(e => this.mouseMove(e));
                 }, setting['longPress']);
             }
         }
     }
 
-    mouseUp() {
+    mouseUp(e) {
         if (this.longPress) {
             clearTimeout(this.longPress);
             this.$canvas.css({
@@ -59,6 +61,11 @@ class Mouse{
         }
         this.originX = 0;
         this.originY = 0;
+        if (this.movePoints.length > 0) {
+            graph.executer.pointMoveOrder(this.movePoints, e.originalEvent.layerX - this.clickPosition.x, e.originalEvent.layerY - this.clickPosition.y);
+            this.movePoints = [];
+            graph.canvas.updateCanvas();
+        } 
     }
 
     changeInsertMode($cancelInsertPointButton, $insertButton) {
@@ -92,17 +99,7 @@ class Mouse{
             const x = e.originalEvent.layerX;
             const y = e.originalEvent.layerY;
             const id = graph.getPointId();
-            const point = new Point(id, x, y);
-            point.draw();
-            graph.addPoint(point);
-        }
-    }
-
-    bindScrollEvent() {
-        if (window.addEventListener){
-            window.addEventListener('DOMMouseScroll', this.scorllEventHandle, false);
-        } else {
-            window.onmousewheel = document.onmousewheel = this.scorllEventHandle;
+            graph.executer.insertPoint(id, x, y);
         }
     }
 }

@@ -9,10 +9,11 @@ class RightMeau{
             var e = e || event;
            //阻止默认行为
             e.preventDefault();
+            console.log(graph.executer.orders)
+            console.log(graph.executer.index)
             if (graph.selectPoints.length > 0) {
                 this.pointAttributeMeau.pointAttributeMeauShow(e.clientX, e.clientY)
             } else if (graph.selectEdges.length > 0) {
-                console.log(1)
                 this.edgeAttributeMeau.edgeAttributeMeauShow(e.clientX, e.clientY)
             }
         }
@@ -22,6 +23,13 @@ class RightMeau{
 class EdgeAttributeMeau{
     constructor() {
         this.$edgeAttributeMeau = $('.edge-dialog');
+        this.$colorInput = this.$edgeAttributeMeau.find('.color-input');
+        this.$sizeInput = this.$edgeAttributeMeau.find('.size-input');
+        this.$solidButton = this.$edgeAttributeMeau.find('.solid');
+        this.$dashButton = this.$edgeAttributeMeau.find('.dash');
+        this.$deleteButton = this.$edgeAttributeMeau.find('.delete-operation');
+        this.$comfirmButton = this.$edgeAttributeMeau.find('.comfirm');
+        this.$closeDialogButton = this.$edgeAttributeMeau.find('.close-dialog');
     }
 
     edgeAttributeMeauShow(x, y) {
@@ -31,63 +39,83 @@ class EdgeAttributeMeau{
             display: 'block',
         })
         const edge = graph.selectEdges[0];
-        const $colorInput = this.$edgeAttributeMeau.find('.color-input');
-        const $sizeInput = this.$edgeAttributeMeau.find('.size-input');
-        this.edgeColorSizeshow($colorInput, $sizeInput, edge);
-        const $solidButton = this.$edgeAttributeMeau.find('.solid');
-        const $dashButton = this.$edgeAttributeMeau.find('.dash')
-        this.edgeStyleShow($solidButton, $dashButton, edge);
-        this.bindedgeStyleUpdate($solidButton, $dashButton);
+        this.edgeColorSizeshow(edge);
+        this.edgeStyleShow(edge);
+        this.bindedgeStyleUpdate();
         this.bindedgeRemoveEvent();
-        this.edgeAttributeButtonEvent($colorInput, $sizeInput, $solidButton);
+        this.edgeAttributeButtonEvent(edge);
     }
 
-    edgeColorSizeshow($colorInput, $sizeInput, edge) {
-        $colorInput.val(edge.lineColor);
-        $sizeInput.val(edge.lineWidth);
+    edgeColorSizeshow(edge) {
+        this.$colorInput.val(edge.lineColor);
+        this.$sizeInput.val(edge.lineWidth);
     }
 
-    edgeStyleShow($solidButton, $dashButton, edge) {
+    edgeStyleShow(edge) {
         if (edge.style === 'dash') {
-            $dashButton.addClass('active');
-            $solidButton.removeClass('active');
+            this.$dashButton.addClass('active');
+            this.$solidButton.removeClass('active');
         } else {
-            $solidButton.addClass('active');
-            $dashButton.removeClass('active');
+            this.$solidButton.addClass('active');
+            this.$dashButton.removeClass('active');
         }
     }
 
-    bindedgeStyleUpdate($solidButton, $dashButton) {
-        $solidButton.click(e => {
-            $dashButton.removeClass('active');
-            $solidButton.addClass('active');
+    bindedgeStyleUpdate() {
+        this.$solidButton.click(e => {
+            this.$dashButton.removeClass('active');
+            this.$solidButton.addClass('active');
         })
-        $dashButton.click(e => {
-            $solidButton.removeClass('active');
-            $dashButton.addClass('active');
+        this.$dashButton.click(e => {
+            this.$solidButton.removeClass('active');
+            this.$dashButton.addClass('active');
         })
     }
 
     bindedgeRemoveEvent() {
-        this.$edgeAttributeMeau.find('.delete-operation').click(e => {
-            graph.removEedge();
+        this.$deleteButton.click(e => {
+            graph.executer.removeEdge(graph.selectEdges.map(edge => edge.id));
         });
     }
 
-    edgeAttributeButtonEvent($colorInput, $sizeInput, $solidButton) {
-        this.$edgeAttributeMeau.find('.close-dialog').click(e => {
+    offButtonEvent() {
+        graph.canvas.updateCanvas();
+        this.$dashButton.off('click');
+        this.$solidButton.off('click');
+        this.$comfirmButton.off('click');
+        this.$deleteButton.off('click');
+        this.$closeDialogButton.off('click');
+    }
+
+    edgeAttributeButtonEvent(edge) {
+        this.$closeDialogButton.click(e => {
             this.$edgeAttributeMeau.css({
                 display: 'none'
-            })
+            });
+            this.offButtonEvent();
         });
-        this.$edgeAttributeMeau.find('.comfirm').click(e => {
-            const color = $colorInput.val();
-            const size = $sizeInput.val();
+        this.$comfirmButton.click(e => {
+            const color = this.$colorInput.val();
+            const size = this.$sizeInput.val();
             let style = 'dash';
-            if ($solidButton.attr('class').includes('active')) {
+            if (this.$solidButton.attr('class').includes('active')) {
                 style = 'solid';
             }
-            graph.updateEdge(color, +size, style);
+            graph.executer.edgeAttributeChange(graph.selectEdges.map(edge => edge.id), {
+                new: {
+                    color: color,
+                    size: +size,
+                    style: style,
+                },
+                old: {
+                    color: edge.lineColor,
+                    size: edge.lineWidth,
+                    style: edge.style,
+                }
+            });
+            this.$edgeAttributeMeau.css({
+                display: 'none'
+            });
         })
     }
 }
@@ -96,6 +124,14 @@ class EdgeAttributeMeau{
 class PointAttributeMeau{
     constructor() {
         this.$pointAttributeMeau = $('.point-dialog');
+        this.$colorInput = this.$pointAttributeMeau.find('.color-input');
+        this.$sizeInput = this.$pointAttributeMeau.find('.size-input');
+        this.$solidButton = this.$pointAttributeMeau.find('.solid');
+        this.$hollowButton = this.$pointAttributeMeau.find('.hollow');
+        this.$comfirmButton = this.$pointAttributeMeau.find('.comfirm');
+        this.$closeDialogButton = this.$pointAttributeMeau.find('.close-dialog');
+        this.$deleteButton = this.$pointAttributeMeau.find('.delete-operation');
+        this.$connectButton = this.$pointAttributeMeau.find('.connect-operation');
     }
 
     pointAttributeMeauShow(x, y) {
@@ -105,70 +141,92 @@ class PointAttributeMeau{
             display: 'block',
         })
         const point = graph.selectPoints[0];
-        const $colorInput = this.$pointAttributeMeau.find('.color-input');
-        const $sizeInput = this.$pointAttributeMeau.find('.size-input');
-        this.pointColorSizeshow($colorInput, $sizeInput, point);
-        const $solidButton = this.$pointAttributeMeau.find('.solid');
-        const $hollowButton = this.$pointAttributeMeau.find('.hollow')
-        this.pointStyleShow($solidButton, $hollowButton, point);
-        this.bindPointStyleUpdate($solidButton, $hollowButton);
         this.bindPointConnectEvent();
         this.bindPointRemoveEvent();
-        this.pointAttributeButtonEvent($colorInput, $sizeInput, $solidButton);
+        this.pointColorSizeshow(point);
+        this.pointStyleShow(point);
+        this.bindPointStyleUpdate();
+        this.pointAttributeButtonEvent(point);
     }
 
-    pointColorSizeshow($colorInput, $sizeInput, point) {
-        $colorInput.val(point.color);
-        $sizeInput.val(point.radius);
+    pointColorSizeshow(point) {
+        this.$colorInput.val(point.color);
+        this.$sizeInput.val(point.radius);
     }
 
-    pointStyleShow($solidButton, $hollowButton, point) {
+    pointStyleShow(point) {
         if (point.style === 'hollow') {
-            $hollowButton.addClass('active');
-            $solidButton.removeClass('active');
+            this.$hollowButton.addClass('active');
+            this.$solidButton.removeClass('active');
         } else {
-            $solidButton.addClass('active');
-            $hollowButton.removeClass('active');
+            this.$solidButton.addClass('active');
+            this.$hollowButton.removeClass('active');
         }
     }
 
-    bindPointStyleUpdate($solidButton, $hollowButton) {
-        $solidButton.click(e => {
-            $hollowButton.removeClass('active');
-            $solidButton.addClass('active');
+    bindPointStyleUpdate() {
+        this.$solidButton.click(e => {
+            this.$hollowButton.removeClass('active');
+            this.$solidButton.addClass('active');
         })
-        $hollowButton.click(e => {
-            $solidButton.removeClass('active');
-            $hollowButton.addClass('active');
+        this.$hollowButton.click(e => {
+            this.$solidButton.removeClass('active');
+            this.$hollowButton.addClass('active');
         })
     }
 
     bindPointConnectEvent() {
-        this.$pointAttributeMeau.find('.connect-operation').click(e => {
-            graph.connectPoint();
+        this.$connectButton.click(e => {
+            graph.executer.insertEdge(graph.selectPoints);
         });
     }
 
     bindPointRemoveEvent() {
-        this.$pointAttributeMeau.find('.delete-operation').click(e => {
-            graph.removePoint();
+        this.$deleteButton.click(e => {
+            graph.executer.removePoint(graph.selectPoints.map(point => point.id));
         });
     }
 
-    pointAttributeButtonEvent($colorInput, $sizeInput, $solidButton) {
-        this.$pointAttributeMeau.find('.close-dialog').click(e => {
+    offButtonEvent() {
+        graph.canvas.updateCanvas();
+        this.$solidButton.off('click');
+        this.$hollowButton.off('click');
+        this.$comfirmButton.off('click');
+        this.$deleteButton.off('click');
+        this.$connectButton.off('click');
+        this.$closeDialogButton.off('click');
+    }
+
+    pointAttributeButtonEvent(point) {
+        this.$closeDialogButton.click(e => {
             this.$pointAttributeMeau.css({
                 display: 'none'
-            })
+            });
+            this.offButtonEvent();
         });
-        this.$pointAttributeMeau.find('.comfirm').click(e => {
-            const color = $colorInput.val();
-            const size = $sizeInput.val();
+        this.$comfirmButton.click(e => {
+            const color = this.$colorInput.val();
+            const size = this.$sizeInput.val();
             let style = 'hollow';
-            if ($solidButton.attr('class').includes('active')) {
+            if (this.$solidButton.attr('class').includes('active')) {
                 style = 'solid';
             }
-            graph.updatePoint(color, +size, style);
+            const changePointIds = graph.selectPoints.map(point => point.id);
+            graph.executer.pointAttributeChange(changePointIds, {
+                new: {
+                    color: color,
+                    size: +size,
+                    style: style,
+                },
+                old: {
+                    color: point.color,
+                    size: point.radius,
+                    style: point.style,
+                }
+            });
+            this.$pointAttributeMeau.css({
+                display: 'none'
+            });
         })
     }
 }

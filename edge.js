@@ -1,5 +1,6 @@
 class Edge{
-    constructor(startPoint, endPoint, lineWidth=setting['lineWidth'], lineColor=setting['lineColor'], style=setting['edgeStyle']) {
+    constructor(id, startPoint, endPoint, lineWidth=setting['lineWidth'], lineColor=setting['lineColor'], style=setting['edgeStyle']) {
+        this.id = id;
         this.k = (endPoint.y - startPoint.y) / (endPoint.x - startPoint.x);
         this.startPoint = startPoint;
         this.endPoint = endPoint;
@@ -50,6 +51,10 @@ class Edge{
     }
 
     getPointFromEdgeDistance(x, y) {
+        if (x > Math.max(this.startX,  this.endX) || x < Math.min(this.startX,  this.endX) 
+        || y > Math.max(this.startY,  this.endY) || y < Math.min(this.startY,  this.endY)){
+            return 10000000
+        }
         const A = this.startY - this.endY;
         const B = this.endX - this.startX;
         const C = -B * this.endY - A * this.endX;

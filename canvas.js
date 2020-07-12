@@ -22,6 +22,8 @@ class Canvas{
     }
 
     updateCanvas() {
+        graph.selectPoints = [];
+        graph.selectEdges = [];
         // 切换回实线
         this.ctx.setLineDash([]);
         this.ctx.clearRect(0, 0, this.$canvas.width, this.$canvas.height);

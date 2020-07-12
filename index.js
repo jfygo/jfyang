@@ -8,7 +8,7 @@ class Graph{
         this.mouse = new Mouse();
         this.rightMeau = new RightMeau();
         this.topMeau = new TopMeau();
-        this.isSelectPoint = false;
+        this.executer = new Executer();
     }
 
     init() {
@@ -22,8 +22,8 @@ class Graph{
         return this.points.length;
     }
 
-    addPoint(point) {
-        this.points.push(point);
+    getEdgeId() {
+        return this.edges.length;
     }
 
     search(x, y, ctrl) {
@@ -32,10 +32,8 @@ class Graph{
         } else if (this.selectEdges.length > 0) {
             this.edgeSearch(x, y, ctrl);
         } else {
-            this.pointSearch(x, y, ctrl); 
-            if (!this.isSelectPoint) {
-                this.edgeSearch(x, y, ctrl);
-            }
+            this.pointSearch(x, y, ctrl);
+            this.edgeSearch(x, y, ctrl);
         }
     }
 
@@ -51,9 +49,7 @@ class Graph{
                 // 如果没按ctrl，点击了别的点，清空选择的列表
                 if (this.selectPoints.length > 0 && !ctrl) {
                     this.canvas.updateCanvas(); 
-                    this.selectPoints = [];
                 }
-                this.isSelectPoint = true;
                 point.markSelectPoint();
                 this.selectPoints.push(point);
                 break;
@@ -62,8 +58,6 @@ class Graph{
         // 如果点击了空白处，就清空选择的列表
         if (i === len && this.selectPoints.length > 0) {
             this.canvas.updateCanvas();
-            this.selectPoints = [];
-            this.isSelectPoint = false;
         } 
     }
 
@@ -85,61 +79,7 @@ class Graph{
         // 如果点击了空白处，就清空选择的列表
         if (i === len && this.selectEdges.length > 0) {
             this.canvas.updateCanvas();
-            this.selectEdges = [];
         }  
-    }
-
-    updatePoint(color, size, style) {
-        this.selectPoints.forEach(point => {
-            point.color = color;
-            point.radius = size;
-            point.style = style;
-        });
-        this.canvas.updateCanvas();
-    }
-
-    removePoint() {
-        let selectPointIds = [];
-        this.selectPoints.forEach(point => {
-            selectPointIds.push(point.id);
-        });
-        this.points = this.points.filter(point => {
-            return !selectPointIds.includes(point.id)
-        });
-        this.edges = this.edges.filter(edge => {
-            return !(selectPointIds.includes(edge.startPoint.id) || selectPointIds.includes(edge.endPoint.id));
-        })
-        this.canvas.updateCanvas();
-    }
-
-    connectPoint() {
-        const len = this.selectPoints.length;
-        let edge;
-        for (let i = 0; i < len - 1; i++) {
-            this.selectPoints[i].addNeighborPoint(this.selectPoints[i+1]);
-            edge = new Edge(this.selectPoints[i], this.selectPoints[i+1]);
-            this.edges.push(edge);
-            edge.draw();
-        }
-    }
-
-    removEedge() {
-        this.selectEdges.forEach(edge => {
-            edge.lineWidth = 0;
-        });
-        this.edges = this.edges.filter(edge => {
-            return edge.lineWidth > 0;
-        })
-        this.canvas.updateCanvas();
-    }
-
-    updateEdge(color, size, style) {
-        this.selectEdges.forEach(edge => {
-            edge.lineColor = color;
-            edge.lineWidth = size;
-            edge.style = style;
-        });
-        this.canvas.updateCanvas();
     }
 }
 
