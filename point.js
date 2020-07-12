@@ -1,7 +1,6 @@
 class Point{
     constructor(id, x, y, radius=setting['pointSize'], style=setting['pointStyle'], color=setting['pointColor']) {
         this.id = id;
-        this.connectEdge = [];
         this.x = x;
         this.y = y;
         this.radius = radius;
@@ -9,33 +8,29 @@ class Point{
         this.color = color;
     }
 
-    addConnectEdge(id) {
-        this.connectEdge.push(id);
-    }
-
     removeNeighborPoint(point) {
         this.neighborPoint = this.neighborPoint.filter((value) => {
-            value.id != point.id
+            value.id != point.id;
         })
     }
 
     addNeighborFrom(point) {
-        this.neighborFrom.push(point)
+        this.neighborFrom.push(point);
     }
 
     removeNeighborFrom(point) {
         this.neighborFrom = this.neighborFrom.filter((value) => {
-            value.id != point.id
+            value.id != point.id;
         })
     }
 
     addNeighborTo(point) {
-        this.neighborTo.push(point)
+        this.neighborTo.push(point);
     }
 
     removeNeighborTo(point) {
         this.neighborTo = this.neighborTo.filter((value) => {
-            value.id != point.id
+            value.id != point.id;
         })
     }
 

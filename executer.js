@@ -105,21 +105,14 @@ class Executer{
         let removePoints = [];
         let removeEdges = [];
         graph.points = graph.points.filter(point => {
-            if (ids.includes(point.id)) {
-                removePoints.push(point);
-                edgeIds.push(point.connectEdge)
-                return false;
-            } else {
-                return true;
-            }
+            return !ids.includes(point.id)
         });
-        const intIds = Array.from(edgeIds.toString().split(','));
-        if (!(intIds.length === 1 && intIds[0] == "")) {
-            for(let i = 0; i < intIds.length; i++) {
-                intIds[i] = +intIds[i];
+        graph.edges.forEach(edge => {
+            if (ids.includes(edge.startPoint.id) || ids.includes(edge.endPoint.id)) {
+                edgeIds.push(edge.id);
             }
-            removeEdges = this.removeEdge(intIds, false);
-        }
+        })
+        removeEdges = this.removeEdge(edgeIds, false);
         if (isTrack) {
             this.orders = this.orders.slice(0, this.index);
             this.orders.push({
@@ -139,9 +132,13 @@ class Executer{
         let edge;
         for (let i = 0; i < len - 1; i++) {
             const id = graph.getEdgeId();
-            points[i].addConnectEdge(id);
-            points[i + 1].addConnectEdge(id);
-            edge = new Edge(id, points[i], points[i + 1]);
+            let multiplicity = 0;
+            graph.edges.forEach(edge => {
+                if ((edge.startPoint.id === points[i].id && edge.endPoint.id === points[i + 1].id) || (edge.startPoint.id === points[i + 1].id && edge.endPoint.id === points[i].id)) {
+                    multiplicity += 1;
+                }
+            })
+            edge = new Edge(id, points[i], points[i + 1], multiplicity);
             graph.edges.push(edge);
             edge.draw();
             if (isTrack) {
