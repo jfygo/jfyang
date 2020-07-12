@@ -21,4 +21,7 @@ setting = {
     canvasEnlarge: 1.1,
     canvasNarrow: 0.9,
     longPress: 500,
+    // 插入的文本框
+    textBoxWidth: 50,
+    textBoxheight: 20,
 }

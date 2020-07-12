@@ -6,7 +6,10 @@ class TopMeau{
         this.$saveButton = $('.top .save');
         this.$revokeButton = $('.top .revoke');
         this.$recoveryButton = $('.top .recovery');
+        this.$insertTextButton = $('.top .insert-text');
+        this.$body = $('body');
         this.isShowGird = false;
+        this.isInsertTextBox = false;
     }
 
     init() {
@@ -34,6 +37,8 @@ class TopMeau{
 
         this.$recoveryButton.click(e => graph.executer.recovery())
 
+        this.$insertTextButton.click(e => this.insertTextHandle(e));
+
         setTimeout(() => {
             this.showGird();
             this.showFigureCoordinate();
@@ -51,6 +56,44 @@ class TopMeau{
         a.click();
         a.remove();
     }
+
+    insertTextHandle(e) {
+        const model = $('<div class="model"></div>');
+        this.$insertTextButton.addClass('active');
+        this.isInsertTextBox = true;
+        this.$body.append(model);
+        model.click(e => {
+            if (!this.isInsertTextBox) {
+                return
+            }
+            this.insertText(e)
+            model.remove();
+            return false;
+        });
+    }
+
+    insertText(e) {
+        const div = $('<div class="text-box"><input type="text" class="input"></div>');
+        this.$body.append(div);
+        this.isInsertTextBox = false;
+        this.$insertTextButton.removeClass('active');
+        div.css({
+            left: e.originalEvent.clientX,
+            top: e.originalEvent.clientY,
+        });
+        const $input = div.find('.input');
+        $input.focus();
+        $input.blur(e => {
+            const text = $input.val();
+            div.text(text);
+        });
+
+        div.mousedown(e => {
+            if (e.originalEvent.which === 3) {
+                div.remove();
+            }
+        })
+    }   
 
     closeGird() {
         this.isShowGird = false;
