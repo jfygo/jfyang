@@ -27,14 +27,8 @@ class Graph{
     }
 
     search(x, y, ctrl) {
-        if (this.selectPoints.length > 0) {
-            this.pointSearch(x, y, ctrl);
-        } else if (this.selectEdges.length > 0) {
-            this.edgeSearch(x, y, ctrl);
-        } else {
-            this.pointSearch(x, y, ctrl);
-            this.edgeSearch(x, y, ctrl);
-        }
+        this.pointSearch(x, y, ctrl);
+        this.edgeSearch(x, y, ctrl);
     }
 
     pointSearch(x, y, ctrl) {
@@ -62,6 +56,9 @@ class Graph{
     }
 
     edgeSearch(x, y, ctrl) {
+        if (this.selectPoints.length > 0) {
+            return;
+        }
         const len = this.edges.length;
         let i;
         for (i=0; i < len; i++) {

@@ -22,5 +22,5 @@ setting = {
     canvasNarrow: 0.9,
     longPress: 500,
     // 多重边的间隔
-    edgeInterval: 40,
+    edgeInterval: 0.1,
 }

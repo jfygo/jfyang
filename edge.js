@@ -20,13 +20,23 @@ class Edge{
     }
 
     drawLine() {
-        const arc = this.calculateArc();
-        graph.canvas.ctx.beginPath();
-        graph.canvas.ctx.moveTo(this.startX, this.startY);
-        graph.canvas.ctx.quadraticCurveTo(arc.arcX, arc.arcY, this.endX, this.endY);
+        this.calculateArc();
         graph.canvas.ctx.lineWidth = this.lineWidth;
         graph.canvas.ctx.strokeStyle = this.lineColor;
-        graph.canvas.ctx.closePath();
+        graph.canvas.ctx.beginPath();
+        if (this.multiplicity === 0) {
+            graph.canvas.ctx.moveTo(this.startX, this.startY);
+            graph.canvas.ctx.lineTo(this.endX, this.endY);
+        } else {
+            const startAngle = Math.atan2(this.startY - this.centerY, this.startX - this.centerX);
+            const endAngle = Math.atan2(this.endY - this.centerY, this.endX - this.centerX);
+            if ((this.multiplicity + 1) % 2 === 1) {
+                graph.canvas.ctx.arc(this.centerX, this.centerY, this.radius, startAngle, endAngle);
+            } else {
+                graph.canvas.ctx.arc(this.centerX, this.centerY, this.radius, startAngle, endAngle, true);
+            }
+            graph.canvas.ctx.stroke();
+        }
         graph.canvas.ctx.stroke(); 
     }
 
@@ -35,9 +45,13 @@ class Edge{
         const positionMultiplicity = parseInt((this.multiplicity + 1)/ 2);
         const middleX = (this.startX + this.endX) / 2;
         const middleY = (this.startY + this.endY) / 2;
-        const arcX = setting['edgeInterval'] * this.sin * position * positionMultiplicity + middleX;
-        const arcY =  -setting['edgeInterval'] * this.cos * position * positionMultiplicity + middleY;
-        return {arcX, arcY};
+        const edgeInterval = setting['edgeInterval'] * util.getTwoPointDistance(this.startX, this.startY, this.endX, this.endY);
+        this.arcX = edgeInterval * this.sin * position * positionMultiplicity + middleX;
+        this.arcY =  -edgeInterval * this.cos * position * positionMultiplicity + middleY;
+        const center = util.getThreePointCenter(this.startX, this.startY, this.arcX, this.arcY, this.endX, this.endY);
+        this.centerX = center.x;
+        this.centerY = center.y;
+        this.radius = util.getTwoPointDistance(this.startX, this.startY, center.x, center.y);
     }
 
     calculateCoordinate() {
@@ -51,23 +65,30 @@ class Edge{
     }
 
     getPointFromEdgeDistance(x, y) {
-        if (x > Math.max(this.startX,  this.endX) || x < Math.min(this.startX,  this.endX) 
-        || y > Math.max(this.startY,  this.endY) || y < Math.min(this.startY,  this.endY)){
-            return 10000000
+        if (this.multiplicity === 0) {
+            const k = (this.endY - this.startY) / (this.endX - this.startX);
+            return util.getPointLineDistance(this.startX, this.startY, k, x, y);
+        } else {
+            return Math.abs(util.getTwoPointDistance(this.centerX, this.centerY, x, y) - this.radius)
         }
-        const A = this.startY - this.endY;
-        const B = this.endX - this.startX;
-        const C = -B * this.endY - A * this.endX;
-        return Math.abs((A * x + B * y + C) / Math.sqrt(A * A + B * B));
     }
 
     markSelectEdge() {
         graph.canvas.ctx.beginPath();
-        graph.canvas.ctx.moveTo(this.startX, this.startY);
-        graph.canvas.ctx.lineTo(this.endX, this.endY);
         graph.canvas.ctx.lineWidth = this.lineWidth * 1.5;
         graph.canvas.ctx.strokeStyle = setting['markLineColor'];
-        graph.canvas.ctx.closePath();
+        if (this.multiplicity === 0) {
+            graph.canvas.ctx.moveTo(this.startX, this.startY);
+            graph.canvas.ctx.lineTo(this.endX, this.endY);
+        } else {
+            const startAngle = Math.atan2(this.startY - this.centerY, this.startX - this.centerX);
+            const endAngle = Math.atan2(this.endY - this.centerY, this.endX - this.centerX);
+            if ((this.multiplicity + 1) % 2 === 1) {
+                graph.canvas.ctx.arc(this.centerX, this.centerY, this.radius, startAngle, endAngle);
+            } else {
+                graph.canvas.ctx.arc(this.centerX, this.centerY, this.radius, startAngle, endAngle, true);
+            }
+        }
         graph.canvas.ctx.stroke();   
     }
 }

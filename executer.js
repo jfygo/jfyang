@@ -140,7 +140,6 @@ class Executer{
             })
             edge = new Edge(id, points[i], points[i + 1], multiplicity);
             graph.edges.push(edge);
-            edge.draw();
             if (isTrack) {
                 this.orders = this.orders.slice(0, this.index);
                 this.orders.push({
