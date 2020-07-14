@@ -186,6 +186,8 @@ class Executer{
                 point.color = info.new.color;
                 point.radius = info.new.size;
                 point.style = info.new.style;
+                point.x = info.new.x;
+                point.y = info.new.y;
             }
         });
         graph.edges.forEach(edge => {
@@ -232,7 +234,7 @@ class Executer{
         graph.canvas.updateCanvas();
         graph.selectPoints = points;
         points.forEach(point => {
-            point.markSelectPoint()
+            point.markSelectPoint();
         });
     }
 

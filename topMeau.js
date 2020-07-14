@@ -8,6 +8,9 @@ class TopMeau{
         this.$recoveryButton = $('.top .recovery');
         this.$insertTextButton = $('.top .insert-text');
         this.$body = $('body');
+        this.$pointData = $('.top .point-data');
+        this.$edgeData = $('.top .edge-data');
+        this.$exportData = $('.top .export');
         this.isShowGird = false;
         this.isInsertTextBox = false;
     }
@@ -33,17 +36,102 @@ class TopMeau{
             this.save();
         })
 
-        this.$revokeButton.click(e => graph.executer.revoke())
+        this.$revokeButton.click(e => graph.executer.revoke());
 
-        this.$recoveryButton.click(e => graph.executer.recovery())
+        this.$recoveryButton.click(e => graph.executer.recovery());
 
         this.$insertTextButton.click(e => this.insertTextHandle(e));
+        
+        this.$pointData.click(e => this.importPoint(e));
+
+        this.$edgeData.click(e => this.importEdge(e));
+
+        this.$exportData.click(e => this.exportData(e))
 
         setTimeout(() => {
             this.showGird();
             this.showFigureCoordinate();
         }, 1);
-        
+    }
+
+    exportData(e) {
+        const pointsData = graph.points.map((point) => [point.x, point.y]);
+        myFile.exportFile(pointsData, '点的数据');
+        const length = graph.points.length;
+        let edgeData = [];
+        for (let i = 0; i < length; i++) {
+            const temp = Array(length).fill(0);
+            edgeData.push(temp);
+        }
+        graph.edges.forEach(edge => {
+            let start = -1, end = -1;
+            for(let i = 0; i < length; i++){
+                if (edge.startPoint.id === graph.points[i].id) {
+                    start = i;
+                } else if (edge.endPoint.id === graph.points[i].id) {
+                    end = i;
+                }
+            }
+            if (start > -1 && end > -1) {
+                edgeData[start][end] += 1;
+            }
+        });
+        myFile.exportFile(edgeData, '边的数据');
+    }
+
+    importPoint(e) {
+        const input = $('<input type="file">');
+        input.click();
+        input.change(e => {
+            const file = e.target.files[0];
+            myFile.importFile(file, (data) => {
+                try{
+                } catch(e) {
+                    console.log(e);
+                    alert('点的数据格式不合适，其中数据为两列数据，每一行数据为每个点的坐标');
+                    return;
+                }
+                const len = data.length;
+                for(let i = 0; i < len; i++) {
+                    if(data[i][0] < 0 || data[i][0] > window.innerWidth || data[i][1] < 0 || data[i][1] > window.innerHeight) {
+                        alert('第' + i + '个点超出范围');
+                    } else {
+                        const id = graph.getPointId();
+                        graph.executer.insertPoint(id, data[i][0], data[i][1]);
+                    }
+                }
+            });
+        });
+    }
+
+    importEdge(e) {
+        const input = $('<input type="file">');
+        input.click();
+        input.change(e => {
+            const file = e.target.files[0];
+            myFile.importFile(file, (data) => {
+                const len = data.length;
+                    const pointsLength = graph.points.length;
+                    for(let i = 0; i < len; i++) {
+                        for (let j = 0; j < i; j++) {
+                            if (i < pointsLength && j < pointsLength && data[i][j] > 0) {
+                                const startPoint = graph.points[i];
+                                const endPoint = graph.points[j];
+                                for (let k = 0; k < data[i][j]; k++) {
+                                    graph.executer.insertEdge([startPoint, endPoint]);
+                                }
+                            }
+                        }
+                    }
+                try{
+                    
+                } catch(e) {
+                    console.log(e);
+                    alert('边的数据格式不合适，其中边的数据是一个邻接表，长宽必须相等，顶点i和顶点j有几条边，ij位置数据就为几，0不可省略');
+                    return;
+                }
+            });
+        });
     }
 
     save() {

@@ -126,6 +126,8 @@ class PointAttributeMeau{
         this.$closeDialogButton = this.$pointAttributeMeau.find('.close-dialog');
         this.$deleteButton = this.$pointAttributeMeau.find('.delete-operation');
         this.$connectButton = this.$pointAttributeMeau.find('.connect-operation');
+        this.$xInput = this.$pointAttributeMeau.find('.x-input');
+        this.$yInput = this.$pointAttributeMeau.find('.y-input');
     }
 
     init() {
@@ -144,12 +146,18 @@ class PointAttributeMeau{
         const point = graph.selectPoints[0];
         this.pointColorSizeshow(point);
         this.pointStyleShow(point);
+        this.pointPositionShow(point);
         this.bindPointStyleUpdate();
     }
 
     pointColorSizeshow(point) {
         this.$colorInput.val(point.color);
         this.$sizeInput.val(point.radius);
+    }
+
+    pointPositionShow(point) {
+        this.$xInput.val(point.x);
+        this.$yInput.val(point.y);
     }
 
     pointStyleShow(point) {
@@ -196,6 +204,8 @@ class PointAttributeMeau{
         const point = graph.selectPoints[0];
         const color = this.$colorInput.val();
         const size = this.$sizeInput.val();
+        const x = this.$xInput.val();
+        const y = this.$yInput.val();
         let style = 'hollow';
         if (this.$solidButton.attr('class').includes('active')) {
             style = 'solid';
@@ -206,11 +216,15 @@ class PointAttributeMeau{
                 color: color,
                 size: +size,
                 style: style,
+                x: +x,
+                y: +y,
             },
             old: {
                 color: point.color,
                 size: point.radius,
                 style: point.style,
+                x: point.x,
+                y: point.y,
             }
         });
         this.$pointAttributeMeau.css({
