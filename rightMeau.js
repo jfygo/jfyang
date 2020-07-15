@@ -35,8 +35,8 @@ class EdgeAttributeMeau{
     init() {
         this.bindedgeRemoveEvent();
         this.bindedgeStyleUpdate();
-        this.$comfirmButton.click(e => this.confirmEvent(e));
-        this.$closeDialogButton.click(e => this.closeDialogEvent(e));
+        this.$comfirmButton.click(e => this.confirmEventHandle(e));
+        this.$closeDialogButton.click(e => this.closeDialogEventHandle(e));
     }
 
     edgeAttributeMeauShow(x, y) {
@@ -82,7 +82,7 @@ class EdgeAttributeMeau{
         });
     }
 
-    confirmEvent() {
+    confirmEventHandle() {
         const edge = graph.selectEdges[0];
         const color = this.$colorInput.val();
         const size = this.$sizeInput.val();
@@ -107,7 +107,7 @@ class EdgeAttributeMeau{
         });
     }
 
-    closeDialogEvent() {
+    closeDialogEventHandle() {
         this.$edgeAttributeMeau.css({
             display: 'none'
         });
@@ -128,13 +128,52 @@ class PointAttributeMeau{
         this.$connectButton = this.$pointAttributeMeau.find('.connect-operation');
         this.$xInput = this.$pointAttributeMeau.find('.x-input');
         this.$yInput = this.$pointAttributeMeau.find('.y-input');
+        this.$connectFront = this.$pointAttributeMeau.find('.connect-front-operation');
+        this.$connectBack = this.$pointAttributeMeau.find('.connect-back-operation');
     }
 
     init() {
         this.bindPointConnectEvent();
         this.bindPointRemoveEvent();
-        this.$comfirmButton.click(e => {this.bindComfirmEvent(e)})
-        this.$closeDialogButton.click(e => {this.bindCloseDialogEvent(e)});
+        this.$comfirmButton.click(e => {this.comfirmEventHandle(e)})
+        this.$closeDialogButton.click(e => {this.closeDialogEventHandle(e)});
+        // this.bindHoverEvent();
+        this.$connectFront.click(e => this.connectFrontArcHandle(e));
+        this.$connectBack.click(e => this.connectBackArcHandle(e));
+    }
+
+    bindHoverEvent(){
+        this.$connectFront.hover(e => {
+            graph.canvas.showEdgeDirection('front');
+        },() => {
+            graph.canvas.updateCanvas();
+        });
+
+        this.$connectBack.hover(e => {
+            graph.canvas.showEdgeDirection('back');
+        },() => {
+            graph.canvas.updateCanvas();
+        });
+
+        this.$connectButton.hover(e => {
+            graph.canvas.showEdgeDirection(undefined);
+        },() => {
+            graph.canvas.updateCanvas();
+        });
+    }
+
+    connectFrontArcHandle(){
+        graph.executer.insertEdge(graph.selectPoints, 'front');
+        this.$pointAttributeMeau.css({
+            display: 'none'
+        });
+    }
+
+    connectBackArcHandle() {
+        graph.executer.insertEdge(graph.selectPoints, 'back');
+        this.$pointAttributeMeau.css({
+            display: 'none'
+        });
     }
 
     pointAttributeMeauShow(x, y) {
@@ -183,7 +222,7 @@ class PointAttributeMeau{
 
     bindPointConnectEvent() {
         this.$connectButton.click(e => {
-            graph.executer.insertEdge(graph.selectPoints);
+            graph.executer.insertEdge(graph.selectPoints, undefined);
         });
     }
 
@@ -193,14 +232,14 @@ class PointAttributeMeau{
         });
     }
 
-    bindCloseDialogEvent(e) {
+    closeDialogEventHandle(e) {
         this.$pointAttributeMeau.css({
             display: 'none'
         });
         graph.canvas.updateCanvas();
     }
 
-    bindComfirmEvent(e) {
+    comfirmEventHandle(e) {
         const point = graph.selectPoints[0];
         const color = this.$colorInput.val();
         const size = this.$sizeInput.val();

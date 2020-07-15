@@ -21,6 +21,14 @@ class Canvas{
         }
     }
 
+    showEdgeDirection(direction) {
+        const len = graph.points.length;
+        for(let i = 0; i < len - 1; i++) {
+            const edge = new Edge(0, graph.points[i], graph.points[i+1], 0, direction);
+            edge.draw();
+        }
+    }
+
     updateCanvas() {
         graph.selectPoints = [];
         graph.selectEdges = [];

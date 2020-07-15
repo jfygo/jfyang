@@ -75,4 +75,18 @@ const util = {
         c = y1 - a * x1 * x1 - b * x1;
         return {a, b, c};
     },
+
+    getMax(data) {
+        const len = data.length;
+        let xmax = data[0][0], ymax = data[0][1];
+        for (let i = 0; i < len; i++) {
+            if (data[i][0] > xmax) {
+                xmax = data[i][0];
+            }
+            if (data[i][1] > ymax) {
+                ymax = data[i][1];
+            }
+        }
+        return {xmax, ymax};
+    }
 }

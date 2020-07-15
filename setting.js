@@ -23,4 +23,7 @@ setting = {
     longPress: 500,
     // 多重边的间隔
     edgeInterval: 0.1,
+    // 有向边箭头长度
+    arrorLength: 15,
+    arrorAngel: 0.6,
 }

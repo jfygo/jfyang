@@ -80,54 +80,55 @@ class TopMeau{
     }
 
     importPoint(e) {
+        alert('点的数据为两列一样长的excel数据，每行数据为一个点的(x,y)坐标，不能为负，插入后的点是相对于最远点的相对位置')
         const input = $('<input type="file">');
         input.click();
         input.change(e => {
             const file = e.target.files[0];
             myFile.importFile(file, (data) => {
                 try{
+                    const len = data.length;
+                    const {xmax, ymax} = util.getMax(data);
+                    for (let i = 0; i < len; i++) {
+                        const id = graph.getPointId();
+                        graph.executer.insertPoint(id, data[i][0] * 0.8 * window.innerWidth / xmax, data[i][1] * 0.8 * window.innerHeight / ymax);
+                    }
                 } catch(e) {
                     console.log(e);
-                    alert('点的数据格式不合适，其中数据为两列数据，每一行数据为每个点的坐标');
+                    alert('点的数据格式不合适');
                     return;
-                }
-                const len = data.length;
-                for(let i = 0; i < len; i++) {
-                    if(data[i][0] < 0 || data[i][0] > window.innerWidth || data[i][1] < 0 || data[i][1] > window.innerHeight) {
-                        alert('第' + i + '个点超出范围');
-                    } else {
-                        const id = graph.getPointId();
-                        graph.executer.insertPoint(id, data[i][0], data[i][1]);
-                    }
                 }
             });
         });
     }
 
     importEdge(e) {
+        alert('边的数据是图的邻接表的excel文件，(i,j)的值为第i个点和第j个点有几条边，如果没有边请置为0，如果不是有向图，请将矩阵左下部分全置为0，特别注意：有向图请让最后一行第一个数加1！！！');
         const input = $('<input type="file">');
         input.click();
         input.change(e => {
             const file = e.target.files[0];
             myFile.importFile(file, (data) => {
-                const len = data.length;
+                try{
+                    const len = data.length;
                     const pointsLength = graph.points.length;
+                    const direction = +data[len-1][0] > 0 ? 'front' : undefined;
+                    data[len-1][0] = +data[len-1][0] - 1;
+                    console.log(data[len-1][0])
                     for(let i = 0; i < len; i++) {
-                        for (let j = 0; j < i; j++) {
+                        for (let j = 0; j < len; j++) {
                             if (i < pointsLength && j < pointsLength && data[i][j] > 0) {
                                 const startPoint = graph.points[i];
                                 const endPoint = graph.points[j];
                                 for (let k = 0; k < data[i][j]; k++) {
-                                    graph.executer.insertEdge([startPoint, endPoint]);
+                                    graph.executer.insertEdge([startPoint, endPoint], direction);
                                 }
                             }
                         }
                     }
-                try{
-                    
                 } catch(e) {
                     console.log(e);
-                    alert('边的数据格式不合适，其中边的数据是一个邻接表，长宽必须相等，顶点i和顶点j有几条边，ij位置数据就为几，0不可省略');
+                    alert('边的数据格式不合适');
                     return;
                 }
             });

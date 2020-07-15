@@ -15,7 +15,7 @@ class Executer{
                     this.insertPoint(order.parameter.id, order.parameter.x, order.parameter.y, false);
                     break;
                 case 'insertEdge':
-                    this.insertEdge([order.parameter.startPoint, order.parameter.endPoint], false);
+                    this.insertEdge([order.parameter.startPoint, order.parameter.endPoint], order.parameter.direction, false);
                     break;
                 case 'pointAttributeChange':
                     this.pointAttributeChange(order.ids, order.parameter, false);
@@ -127,7 +127,7 @@ class Executer{
         graph.canvas.updateCanvas();
     }
 
-    insertEdge(points, isTrack=true) {
+    insertEdge(points, direction, isTrack=true) {
         const len = points.length;
         let edge;
         for (let i = 0; i < len - 1; i++) {
@@ -138,7 +138,7 @@ class Executer{
                     multiplicity += 1;
                 }
             })
-            edge = new Edge(id, points[i], points[i + 1], multiplicity);
+            edge = new Edge(id, points[i], points[i + 1], multiplicity, direction);
             graph.edges.push(edge);
             if (isTrack) {
                 this.orders = this.orders.slice(0, this.index);
@@ -148,6 +148,7 @@ class Executer{
                         id: id,
                         startPoint: points[i],
                         endPoint: points[i + 1],
+                        direction: direction,
                     },
                 });
                 this.index += 1;
