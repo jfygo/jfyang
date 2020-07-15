@@ -137,7 +137,7 @@ class PointAttributeMeau{
         this.bindPointRemoveEvent();
         this.$comfirmButton.click(e => {this.comfirmEventHandle(e)})
         this.$closeDialogButton.click(e => {this.closeDialogEventHandle(e)});
-        // this.bindHoverEvent();
+        this.bindHoverEvent();
         this.$connectFront.click(e => this.connectFrontArcHandle(e));
         this.$connectBack.click(e => this.connectBackArcHandle(e));
     }
@@ -146,19 +146,28 @@ class PointAttributeMeau{
         this.$connectFront.hover(e => {
             graph.canvas.showEdgeDirection('front');
         },() => {
-            graph.canvas.updateCanvas();
+            this.hoverLeave();
         });
 
         this.$connectBack.hover(e => {
             graph.canvas.showEdgeDirection('back');
         },() => {
-            graph.canvas.updateCanvas();
+            this.hoverLeave();
         });
 
         this.$connectButton.hover(e => {
             graph.canvas.showEdgeDirection(undefined);
         },() => {
-            graph.canvas.updateCanvas();
+            this.hoverLeave();
+        });
+    }
+
+    hoverLeave() {
+        const temp = graph.selectPoints;
+        graph.canvas.updateCanvas();
+        graph.selectPoints = temp;
+        temp.forEach(point => {
+            point.markSelectPoint();
         });
     }
 
@@ -223,6 +232,9 @@ class PointAttributeMeau{
     bindPointConnectEvent() {
         this.$connectButton.click(e => {
             graph.executer.insertEdge(graph.selectPoints, undefined);
+            this.$pointAttributeMeau.css({
+                display: 'none'
+            });
         });
     }
 

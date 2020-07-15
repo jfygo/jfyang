@@ -8,6 +8,7 @@ class Edge{
         this.style = style;
         this.lineColor = lineColor;
         this.lineWidth = lineWidth;
+        this.k = (endPoint.y - startPoint.y) / (endPoint.x - startPoint.x);
         this.calculateCoordinate();
     }
 
@@ -17,8 +18,21 @@ class Edge{
         } else if (this.style === 'dash') {
             graph.canvas.ctx.setLineDash([4,8]);
         } 
-        this.drawLine(); 
-        this.drawArrow();
+        if (this.startPoint.id === this.endPoint.id) {
+            this.drawRing();
+        } else {
+            this.drawLine(); 
+            this.drawArrow();
+        }
+    }
+
+    drawRing() {
+        graph.canvas.ctx.lineWidth = this.lineWidth;;
+        graph.canvas.ctx.strokeStyle = this.lineColor;
+        graph.canvas.ctx.beginPath();
+        const radius = (this.multiplicity + 1) * setting['ringRadius']
+        graph.canvas.ctx.arc(this.startPoint.x, this.startPoint.y - radius, radius, 0, 2*Math.PI);
+        graph.canvas.ctx.stroke(); 
     }
 
     drawArrow() {
@@ -91,30 +105,47 @@ class Edge{
     }
 
     getPointFromEdgeDistance(x, y) {
-        if (this.multiplicity === 0) {
-            const k = (this.endY - this.startY) / (this.endX - this.startX);
-            return util.getPointLineDistance(this.startX, this.startY, k, x, y);
+        if (this.checkOverBoder(x, y)) {
+            return 1000000;
+        }
+        if (this.startPoint.id === this.endPoint.id) {
+            const radius = (this.multiplicity + 1) * setting['ringRadius'];
+            return Math.abs(radius - util.getTwoPointDistance(this.startPoint.x, this.startPoint.y - radius, x, y));
         } else {
-            return Math.abs(util.getTwoPointDistance(this.centerX, this.centerY, x, y) - this.radius)
+            if (this.multiplicity === 0) {
+                const k = (this.endY - this.startY) / (this.endX - this.startX);
+                return util.getPointLineDistance(this.startX, this.startY, k, x, y);
+            } else {
+                return Math.abs(util.getTwoPointDistance(this.centerX, this.centerY, x, y) - this.radius)
+            }
         }
     }
 
-    markSelectEdge() {
-        graph.canvas.ctx.beginPath();
-        graph.canvas.ctx.lineWidth = this.lineWidth * 1.5;
-        graph.canvas.ctx.strokeStyle = setting['markLineColor'];
-        if (this.multiplicity === 0) {
-            graph.canvas.ctx.moveTo(this.startX, this.startY);
-            graph.canvas.ctx.lineTo(this.endX, this.endY);
+    checkOverBoder(x, y) {
+        if (this.startPoint.id === this.endPoint.id) {
+            return false;
+        }
+        const xmax = Math.max(this.startPoint.x, this.endPoint.x),xmin = Math.min(this.startPoint.x, this.endPoint.x), ymax = Math.max(this.startPoint.y, this.endPoint.y), ymin = Math.min(this.startPoint.y, this.endPoint.y);
+        if (Math.abs(this.k) > 20) {
+            if (y > ymax || y < ymin) {
+                return true;
+            }
+        } else if (Math.abs(this.k) < 0.5) {
+            if (x > xmax || x < xmin) {
+                return true;
+            }
         } else {
-            const startAngle = Math.atan2(this.startY - this.centerY, this.startX - this.centerX);
-            const endAngle = Math.atan2(this.endY - this.centerY, this.endX - this.centerX);
-            if ((this.multiplicity + 1) % 2 === 1) {
-                graph.canvas.ctx.arc(this.centerX, this.centerY, this.radius, startAngle, endAngle);
-            } else {
-                graph.canvas.ctx.arc(this.centerX, this.centerY, this.radius, startAngle, endAngle, true);
+            if (y > ymax || y < ymin || x > xmax || x < xmin) {
+                return true;
             }
         }
-        graph.canvas.ctx.stroke();   
+        return false;
+    }
+
+    markSelectEdge() {
+        const tempColor = this.lineColor;
+        this.lineColor = setting['markLineColor'];
+        this.draw();
+        this.lineColor = tempColor;
     }
 }

@@ -26,4 +26,6 @@ setting = {
     // 有向边箭头长度
     arrorLength: 15,
     arrorAngel: 0.6,
+    // 环的大小
+    ringRadius: 20,
 }

@@ -128,7 +128,11 @@ class Executer{
     }
 
     insertEdge(points, direction, isTrack=true) {
-        const len = points.length;
+        let len = points.length;
+        if (len === 1) {
+            points.push(points[0]);
+            len = 2;
+        }
         let edge;
         for (let i = 0; i < len - 1; i++) {
             const id = graph.getEdgeId();
