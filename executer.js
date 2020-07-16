@@ -218,6 +218,7 @@ class Executer{
                 edge.lineColor = info.new.color;
                 edge.lineWidth = info.new.size;
                 edge.style = info.new.style;
+                edge.power = info.new.power;
             }
         });
         if (isTrack) {

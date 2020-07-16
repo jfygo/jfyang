@@ -30,6 +30,7 @@ class EdgeAttributeMeau{
         this.$deleteButton = this.$edgeAttributeMeau.find('.delete-operation');
         this.$comfirmButton = this.$edgeAttributeMeau.find('.comfirm');
         this.$closeDialogButton = this.$edgeAttributeMeau.find('.close-dialog');
+        this.$powerInput = this.$edgeAttributeMeau.find('.power-input');
     }
 
     init() {
@@ -46,13 +47,16 @@ class EdgeAttributeMeau{
             display: 'block',
         })
         const edge = graph.selectEdges[0];
-        this.edgeColorSizeshow(edge);
+        this.edgeAttributeshow(edge);
         this.edgeStyleShow(edge);
     }
 
-    edgeColorSizeshow(edge) {
+    edgeAttributeshow(edge) {
         this.$colorInput.val(edge.lineColor);
         this.$sizeInput.val(edge.lineWidth);
+        if (edge.power != undefined) {
+            this.$powerInput.val(edge.power);
+        }
     }
 
     edgeStyleShow(edge) {
@@ -86,6 +90,7 @@ class EdgeAttributeMeau{
         const edge = graph.selectEdges[0];
         const color = this.$colorInput.val();
         const size = this.$sizeInput.val();
+        const power = this.$powerInput.val();
         let style = 'dash';
         if (this.$solidButton.attr('class').includes('active')) {
             style = 'solid';
@@ -95,11 +100,13 @@ class EdgeAttributeMeau{
                 color: color,
                 size: +size,
                 style: style,
+                power: +power,
             },
             old: {
                 color: edge.lineColor,
                 size: edge.lineWidth,
                 style: edge.style,
+                power: edge.power,
             }
         });
         this.$edgeAttributeMeau.css({

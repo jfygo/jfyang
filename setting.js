@@ -28,4 +28,6 @@ setting = {
     arrorAngel: 0.6,
     // 环的大小
     ringRadius: 20,
+    // 权重数字大小
+    powerFont: '15px "微软雅黑"',
 }

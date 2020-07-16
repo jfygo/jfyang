@@ -1,10 +1,11 @@
 class Edge{
-    constructor(id, startPoint, endPoint, multiplicity, direction=undefined, lineWidth=setting['lineWidth'], lineColor=setting['lineColor'], style=setting['edgeStyle']) {
+    constructor(id, startPoint, endPoint, multiplicity, direction=undefined, power=undefined, lineWidth=setting['lineWidth'], lineColor=setting['lineColor'], style=setting['edgeStyle']) {
         this.id = id;
         this.startPoint = startPoint;
         this.multiplicity = multiplicity;
         this.endPoint = endPoint;
         this.direction = direction;
+        this.power = power;
         this.style = style;
         this.lineColor = lineColor;
         this.lineWidth = lineWidth;
@@ -24,6 +25,16 @@ class Edge{
             this.drawLine(); 
             this.drawArrow();
         }
+        if (this.power != undefined) {
+            this.showPower();
+        }
+    }
+
+    showPower() {
+        graph.canvas.ctx.font = setting['powerFont'];
+        graph.canvas.ctx.fillStyle = "#000000";
+        graph.canvas.ctx.textBaseline = "Bottom";
+        graph.canvas.ctx.fillText(this.power, this.arcX, this.arcY - 20);
     }
 
     drawRing() {
@@ -33,6 +44,8 @@ class Edge{
         const radius = (this.multiplicity + 1) * setting['ringRadius']
         graph.canvas.ctx.arc(this.startPoint.x, this.startPoint.y - radius, radius, 0, 2*Math.PI);
         graph.canvas.ctx.stroke(); 
+        this.arcX = this.startPoint.x;
+        this.arcY = this.startPoint.y - radius * 2;
     }
 
     drawArrow() {

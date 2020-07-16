@@ -11,6 +11,7 @@ class TopMeau{
         this.$pointData = $('.top .point-data');
         this.$edgeData = $('.top .edge-data');
         this.$exportData = $('.top .export');
+        this.$powerData = $('.top .power-data');
         this.isShowGird = false;
         this.isInsertTextBox = false;
     }
@@ -46,12 +47,35 @@ class TopMeau{
 
         this.$edgeData.click(e => this.importEdge(e));
 
-        this.$exportData.click(e => this.exportData(e))
+        this.$exportData.click(e => this.exportData(e));
+
+        this.$powerData.click(e => this.importPower(e))
 
         setTimeout(() => {
             this.showGird();
             this.showFigureCoordinate();
         }, 1);
+    }
+
+    importPower(e) {
+        alert('权重的数据是点的个数阶的方阵的excel文件，(i,j)的值为第i个点到第j个点的权重，如果没有权重请设置为0');
+        const input = $('<input type="file">');
+        input.click();
+        input.change(e => {
+            const file = e.target.files[0];
+            myFile.importFile(file, (data) => {
+                try{
+                    graph.edges.forEach(edge => {
+                        edge.power = data[edge.startPoint.id][edge.endPoint.id];
+                    });
+                    graph.canvas.updateCanvas();
+                } catch(e) {
+                    console.log(e);
+                    alert('权重的数据格式不合适');
+                    return;
+                }
+            });
+        });
     }
 
     exportData(e) {
@@ -114,7 +138,6 @@ class TopMeau{
                     const pointsLength = graph.points.length;
                     const direction = +data[len-1][0] > 0 ? 'front' : undefined;
                     data[len-1][0] = +data[len-1][0] - 1;
-                    console.log(data[len-1][0])
                     for(let i = 0; i < len; i++) {
                         for (let j = 0; j < len; j++) {
                             if (i < pointsLength && j < pointsLength && data[i][j] > 0) {
